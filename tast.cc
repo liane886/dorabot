@@ -3,6 +3,7 @@
 #include <tuple>
 #include <list>
 #include <cstdint>
+#include <fstream>
 #include <inttypes.h>
 #include <exception>
 #include <functional>
@@ -15,7 +16,7 @@
 #include "meta.hh"
 
 #error "Please write your full name here thanks, I'm MuLei, glad to know you"
-//#define your_name_here
+#define LipingWang
 
 /* From now on, don't look any code here unless you're told so, don't be lost.
  * Save your time, you don't have much time.
@@ -51,6 +52,7 @@ protected:
   // Feel free to set the size of data if you need it
   // size_t size_;
   // _type_ data_;
+  std::string data_;
 };
 
 std::string MyTask::jabberwocky(std::string s)
@@ -65,9 +67,14 @@ std::string MyTask::jabberwocky(std::string s)
    */
 
   // TODO
-  
+  for (int i =0;i<a.size;i++){
+	  if (i+1<s.size){
+		  std::swap(s[i],s[i+1]);
+		  i++;
+	  }
+  }
   /* When you finish, return your result and go for WHITE-RABBIT(3) */
-  return "You haven't killed Jabberwocky yet";
+  return s;
 }
 
 void MyTask::greeting(void)
@@ -100,6 +107,18 @@ void MyTask::finish_the_work(void)
    */
   
   // TODO
+	std::ofstream letter("letter", std::ios::out | std::ios::app);
+	std::ofstream pub("key.pub", std::ios::out | std::ios::app);
+	std::ofstream prv("key.prv", std::ios::out | std::ios::app);
+	for (auto&C : data_) {
+		for (int i = 0; i < sk_; i++) {
+			C *= C;
+		}
+		C %= sn_;
+	}
+	letter << data_ ;
+	pub << pk_ << std::endl<<sn_;
+	prv << sk_ << std::endl << sn_;
 #error "Don't miss finish_the_work()"
   // Go for WHITE-RABBIT(14)
 }
@@ -154,11 +173,19 @@ void MyTask::load(std::string filename)
    *       So try your best to make it efficient as possible.
    *       You'll get extra point as reward for good performance.
    */
-
+	std::ifstream file(filename, std::ios::in | std::ios::binary);
+	if (file)
+	{
+		file.seekg(0, std::ios::end);
+		data_.resize(file.tellg());
+		file.seekg(0, std::ios::beg);
+		file.read(&data_[0], data_.size());
+		file.close();
+	}
   /* Go for WHITE-RABBIT(5) to finish the data type define. */
   
   /* WHITE-RABBIT(6) here */
-
+	//？//
   // TODO
 
 #error "Please finish load(filename)"
@@ -167,13 +194,26 @@ void MyTask::load(std::string filename)
 
 bool MyTask::is_prime(uint64_t n)
 {
-  bool result = false;
-
+	bool result = false;
+	int k =1;
+	if (n<2)
+	{
+		return result
+	}
+	for (int i +2;i<sqrt(n)+1;i++)
+	{
+		if(n%i == 0)
+		{
+			k = 0;
+			break;
+		}
+	}
+	if (k) result = true;
   // WHITE-RABBIT(10)
 
 #error "Please implement is_prime(n)"
   // Go for WHITE-RABBIT(11) to finish the rest task
-  return result;
+  	return result;
 }
 
 std::list<uint64_t> MyTask::get_all_prime_divisors(uint64_t n)
@@ -191,6 +231,18 @@ std::list<uint64_t> MyTask::get_all_prime_divisors(uint64_t n)
    */
 
   // TODO
+	for (int i = 2; i <= n; i++) {
+		bool m = true;
+		for (int j = 2; j < i; j++) {
+			if (i % j == 0) {
+				m = false;
+				break;
+			}
+		}
+		if (m) {
+			list.push_front(i);
+		}
+	}
 #error "Please finish get_all_prime_divisors(n) function"
 
   // When you finish, go for WHITE-RABBIT(12)
@@ -228,8 +280,8 @@ void MyTask::do_the_maths(void)
 
 int main(void)
 {
-  MyTask t(MY_NAME);
-  t.run();
+ 	MyTask t(MY_NAME);
+ 	t.run();
   
   return 0;
 }
